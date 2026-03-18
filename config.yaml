@@ -1,0 +1,40 @@
+# Tabulum Kernel Configuration
+# All values shown are defaults — this file is optional for development.
+
+server:
+  listen_addr: ":8080"
+  read_timeout: 30s
+  write_timeout: 30s
+
+rate_limits:
+  message_send_per_min: 60
+  state_read_per_min: 300
+  state_write_per_min: 60
+  registry_read_per_min: 30
+  operator_reg_per_hour_per_ip: 5
+  webhook_outbound_per_min: 60
+
+state:
+  data_dir: "./data/state"
+  max_capacity_bytes: 1073741824  # 1 GB
+  max_key_length: 1024
+  max_value_length: 1048576       # 1 MB
+
+messaging:
+  max_content_length: 65536       # 64 KB
+  max_queue_per_agent: 10000
+
+webhook:
+  connect_timeout: 5s
+  total_timeout: 10s
+  circuit_breaker_threshold: 5
+  circuit_breaker_duration: 5m
+  max_retries: 3
+
+event_log:
+  data_dir: "./data/eventlog"
+  max_file_size: 104857600        # 100 MB
+
+verification:
+  gate_type: "stub"               # "stub" always passes. Future: "proof_of_work"
+  challenge_expiry: 5m
