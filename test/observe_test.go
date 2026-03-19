@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -547,5 +548,252 @@ func TestObserve_EventsPagination(t *testing.T) {
 	}
 	if body["has_more"] != false {
 		t.Error("Expected has_more=false on last page")
+	}
+}
+
+// --- Admin API Tests ---
+
+const testAdminKey = "admin_testkey1234567890abcdef"
+
+func setupObserveWithAdmin(t *testing.T) (obsURL string, tmpDir string, cleanup func()) {
+	t.Helper()
+
+	tmpDir = t.TempDir()
+	eventLogDir := filepath.Join(tmpDir, "eventlog")
+	os.MkdirAll(eventLogDir, 0o755)
+
+	t.Setenv("TABULUM_ADMIN_KEY", testAdminKey)
+
+	cfg := observe.Config{
+		Server:    observe.ServerConfig{ListenAddr: ":0", ReadTimeout: 30 * time.Second, WriteTimeout: 30 * time.Second},
+		Kernel:    observe.KernelDataConfig{EventLogDir: eventLogDir, TransparencyLogPath: filepath.Join(tmpDir, "transparency.jsonl")},
+		RateLimit: observe.RateLimitConfig{RequestsPerMinPerIP: 300},
+		WebSocket: observe.WebSocketConfig{MaxConnections: 10, WriteTimeout: 10 * time.Second, PingInterval: 30 * time.Second, MaxDuration: 24 * time.Hour},
+		Admin:     observe.AdminConfig{Enabled: true},
+	}
+
+	srv, err := observe.NewServer(cfg)
+	if err != nil {
+		t.Fatalf("Failed to create observe server with admin: %v", err)
+	}
+
+	ts := httptest.NewServer(srv.Handler())
+	return ts.URL, tmpDir, func() {
+		ts.Close()
+		srv.Shutdown(context.Background())
+	}
+}
+
+func writeTestEvent(t *testing.T, dir string, event map[string]interface{}) {
+	t.Helper()
+	eventLogDir := filepath.Join(dir, "eventlog")
+	path := filepath.Join(eventLogDir, "events.jsonl")
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o644)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer f.Close()
+	data, _ := json.Marshal(event)
+	f.Write(data)
+	f.Write([]byte("\n"))
+}
+
+func TestAdmin_Unauthorized(t *testing.T) {
+	obsURL, _, cleanup := setupObserveWithAdmin(t)
+	defer cleanup()
+
+	// No auth header
+	resp, err := http.Post(obsURL+"/admin/remove", "application/json", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != 401 {
+		t.Errorf("Expected 401, got %d", resp.StatusCode)
+	}
+}
+
+func TestAdmin_WrongKey(t *testing.T) {
+	obsURL, _, cleanup := setupObserveWithAdmin(t)
+	defer cleanup()
+
+	req, _ := http.NewRequest("POST", obsURL+"/admin/remove", strings.NewReader(`{"type":"state","key":"x","reason":"test"}`))
+	req.Header.Set("Authorization", "Bearer admin_wrongkey")
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != 401 {
+		t.Errorf("Expected 401, got %d", resp.StatusCode)
+	}
+}
+
+func TestAdmin_MissingFields(t *testing.T) {
+	obsURL, _, cleanup := setupObserveWithAdmin(t)
+	defer cleanup()
+
+	tests := []struct {
+		name string
+		body string
+	}{
+		{"missing type", `{"key":"x","reason":"test"}`},
+		{"missing reason", `{"type":"state","key":"x"}`},
+		{"missing key for state", `{"type":"state","reason":"test"}`},
+		{"missing message_id for message", `{"type":"message","reason":"test"}`},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			req, _ := http.NewRequest("POST", obsURL+"/admin/remove", strings.NewReader(tc.body))
+			req.Header.Set("Authorization", "Bearer "+testAdminKey)
+			req.Header.Set("Content-Type", "application/json")
+			resp, err := http.DefaultClient.Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			resp.Body.Close()
+			if resp.StatusCode != 400 {
+				t.Errorf("Expected 400 for %s, got %d", tc.name, resp.StatusCode)
+			}
+		})
+	}
+}
+
+func TestAdmin_RemoveStateKey(t *testing.T) {
+	obsURL, tmpDir, cleanup := setupObserveWithAdmin(t)
+	defer cleanup()
+
+	// Write a state_written event to the event log
+	writeTestEvent(t, tmpDir, map[string]interface{}{
+		"seq":   1,
+		"ts":    time.Now().UTC().Format(time.RFC3339Nano),
+		"type":  "state_written",
+		"agent": "agent_001",
+		"data": map[string]interface{}{
+			"key":   "bad_content",
+			"value": "some illegal content here",
+		},
+	})
+
+	// Call admin remove
+	req, _ := http.NewRequest("POST", obsURL+"/admin/remove", strings.NewReader(`{
+		"type": "state",
+		"key": "bad_content",
+		"reason": "CSAM — illegal content"
+	}`))
+	req.Header.Set("Authorization", "Bearer "+testAdminKey)
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		var body map[string]interface{}
+		json.NewDecoder(resp.Body).Decode(&body)
+		t.Fatalf("Expected 200, got %d: %v", resp.StatusCode, body)
+	}
+
+	var result map[string]interface{}
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	if result["status"] != "removed" {
+		t.Errorf("Expected status=removed, got %v", result["status"])
+	}
+	if result["action"] != "state_key_removed" {
+		t.Errorf("Expected action=state_key_removed, got %v", result["action"])
+	}
+	if result["content_hash"] == nil || result["content_hash"] == "" {
+		t.Error("Expected content_hash to be set")
+	}
+
+	// Verify transparency log via admin endpoint
+	req2, _ := http.NewRequest("GET", obsURL+"/admin/removals", nil)
+	req2.Header.Set("Authorization", "Bearer "+testAdminKey)
+	resp2, _ := http.DefaultClient.Do(req2)
+	defer resp2.Body.Close()
+
+	var removals map[string]interface{}
+	json.NewDecoder(resp2.Body).Decode(&removals)
+	if removals["total"].(float64) != 1 {
+		t.Errorf("Expected 1 removal, got %v", removals["total"])
+	}
+}
+
+func TestAdmin_RedactMessage(t *testing.T) {
+	obsURL, tmpDir, cleanup := setupObserveWithAdmin(t)
+	defer cleanup()
+
+	msgID := "msg-test-12345"
+
+	// Write a message_sent event to the event log
+	writeTestEvent(t, tmpDir, map[string]interface{}{
+		"seq":   1,
+		"ts":    time.Now().UTC().Format(time.RFC3339Nano),
+		"type":  "message_sent",
+		"agent": "agent_001",
+		"data": map[string]interface{}{
+			"message_id":     msgID,
+			"from":           "agent_001",
+			"to":             "agent_002",
+			"content":        "this is bad content that should be redacted",
+			"content_length": 43,
+		},
+	})
+
+	// Call admin redact
+	req, _ := http.NewRequest("POST", obsURL+"/admin/remove", strings.NewReader(fmt.Sprintf(`{
+		"type": "message",
+		"message_id": "%s",
+		"reason": "CSAM"
+	}`, msgID)))
+	req.Header.Set("Authorization", "Bearer "+testAdminKey)
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		var body map[string]interface{}
+		json.NewDecoder(resp.Body).Decode(&body)
+		t.Fatalf("Expected 200, got %d: %v", resp.StatusCode, body)
+	}
+
+	var result map[string]interface{}
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	if result["status"] != "removed" {
+		t.Errorf("Expected status=removed, got %v", result["status"])
+	}
+	if result["action"] != "message_redacted" {
+		t.Errorf("Expected action=message_redacted, got %v", result["action"])
+	}
+
+	// Verify the event log was rewritten with [REDACTED]
+	eventData, _ := os.ReadFile(filepath.Join(tmpDir, "eventlog", "events.jsonl"))
+	if !strings.Contains(string(eventData), "[REDACTED]") {
+		t.Error("Expected event log to contain [REDACTED]")
+	}
+	if strings.Contains(string(eventData), "this is bad content") {
+		t.Error("Expected original content to be removed from event log")
+	}
+
+	// Verify observation API returns redacted content
+	obsResp, _ := http.Get(obsURL + "/observe/events")
+	defer obsResp.Body.Close()
+	var evBody map[string]interface{}
+	json.NewDecoder(obsResp.Body).Decode(&evBody)
+	events := evBody["events"].([]interface{})
+	if len(events) != 1 {
+		t.Fatalf("Expected 1 event, got %d", len(events))
+	}
+	evData := events[0].(map[string]interface{})["data"].(map[string]interface{})
+	if evData["redacted"] != true {
+		t.Error("Expected event data to be marked as redacted")
 	}
 }

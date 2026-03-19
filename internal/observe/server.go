@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	bolt "go.etcd.io/bbolt"
@@ -63,8 +64,20 @@ func NewServer(cfg Config) (*Server, error) {
 	// Create WebSocket hub
 	wsHub := NewWebSocketHub(events, transparency, cfg.WebSocket)
 
+	// Load admin key and create admin handlers
+	var adminHandlers *AdminHandlers
+	var adminKey string
+	if cfg.Admin.Enabled {
+		adminKey = os.Getenv("TABULUM_ADMIN_KEY")
+		if adminKey == "" {
+			return nil, fmt.Errorf("admin is enabled but TABULUM_ADMIN_KEY environment variable is not set")
+		}
+		adminHandlers = NewAdminHandlers(cfg.Kernel.EventLogDir, cfg.Kernel.TransparencyLogPath, transparency)
+		log.Println("[observe] Admin API enabled")
+	}
+
 	// Create router
-	router := NewRouter(handlers, wsHub, limiter)
+	router := NewRouter(handlers, wsHub, limiter, adminHandlers, adminKey)
 
 	httpServer := &http.Server{
 		Addr:         cfg.Server.ListenAddr,

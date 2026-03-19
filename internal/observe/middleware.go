@@ -2,6 +2,7 @@ package observe
 
 import (
 	"bufio"
+	"crypto/subtle"
 	"fmt"
 	"log"
 	"net"
@@ -12,6 +13,32 @@ import (
 
 	"golang.org/x/time/rate"
 )
+
+// RequireAdminAuth returns middleware that validates the admin bearer token.
+func RequireAdminAuth(adminKey string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			token := extractBearerToken(r)
+			if token == "" || subtle.ConstantTimeCompare([]byte(token), []byte(adminKey)) != 1 {
+				writeError(w, http.StatusUnauthorized, "unauthorized", "Invalid admin key")
+				return
+			}
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
+func extractBearerToken(r *http.Request) string {
+	auth := r.Header.Get("Authorization")
+	if auth == "" {
+		return ""
+	}
+	const prefix = "Bearer "
+	if len(auth) < len(prefix) || !strings.EqualFold(auth[:len(prefix)], prefix) {
+		return ""
+	}
+	return auth[len(prefix):]
+}
 
 // IPRateLimiter provides per-IP rate limiting for the observation API.
 type IPRateLimiter struct {

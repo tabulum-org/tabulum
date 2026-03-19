@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func NewRouter(handlers *Handlers, wsHub *WebSocketHub, limiter *IPRateLimiter) http.Handler {
+func NewRouter(handlers *Handlers, wsHub *WebSocketHub, limiter *IPRateLimiter, adminHandlers *AdminHandlers, adminKey string) http.Handler {
 	mux := http.NewServeMux()
 
 	// Health check — no rate limit
@@ -45,7 +45,14 @@ func NewRouter(handlers *Handlers, wsHub *WebSocketHub, limiter *IPRateLimiter) 
 	// Transparency log
 	mux.HandleFunc("GET /observe/transparency", handlers.Transparency)
 
-	// Wrap with middleware
+	// Admin routes — no rate limit, no CORS
+	if adminKey != "" && adminHandlers != nil {
+		adminAuth := RequireAdminAuth(adminKey)
+		mux.Handle("POST /admin/remove", adminAuth(http.HandlerFunc(adminHandlers.AdminRemove)))
+		mux.Handle("GET /admin/removals", adminAuth(http.HandlerFunc(adminHandlers.AdminListRemovals)))
+	}
+
+	// Wrap public routes with middleware
 	var handler http.Handler = mux
 	handler = CORSMiddleware(handler)
 	handler = RateLimitMiddleware(limiter)(handler)

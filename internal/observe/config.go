@@ -9,10 +9,15 @@ import (
 )
 
 type Config struct {
-	Server    ServerConfig    `yaml:"server"`
+	Server    ServerConfig     `yaml:"server"`
 	Kernel    KernelDataConfig `yaml:"kernel"`
-	RateLimit RateLimitConfig `yaml:"rate_limit"`
-	WebSocket WebSocketConfig `yaml:"websocket"`
+	RateLimit RateLimitConfig  `yaml:"rate_limit"`
+	WebSocket WebSocketConfig  `yaml:"websocket"`
+	Admin     AdminConfig      `yaml:"admin"`
+}
+
+type AdminConfig struct {
+	Enabled bool `yaml:"enabled"`
 }
 
 type ServerConfig struct {
