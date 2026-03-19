@@ -7,7 +7,7 @@ docs/tabulum_marketing_growth_doc.md
 
 # Binaries
 bin/
-tabulum
+/tabulum
 *.exe
 
 # Data directories
