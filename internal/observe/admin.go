@@ -111,7 +111,7 @@ func (a *AdminHandlers) redactMessage(w http.ResponseWriter, req adminRemoveRequ
 	}
 
 	// Use the remove package to redact the message in the event log and write transparency entry
-	err := remove.RedactMessage(a.eventLogDir, a.transparencyPath, req.MessageID, req.Reason)
+	err := remove.RedactMessage(a.eventLogDir, a.transparencyPath, req.MessageID, req.Reason, "admin_api")
 	if err != nil {
 		if err.Error() == fmt.Sprintf("message %q not found in event log", req.MessageID) {
 			writeError(w, http.StatusNotFound, "not_found", fmt.Sprintf("Message %q not found in event log", req.MessageID))

@@ -112,7 +112,7 @@ func handleMessage(args []string) {
 		return
 	}
 
-	if err := remove.RedactMessage(eventLogDir, transparencyPath, id, reason); err != nil {
+	if err := remove.RedactMessage(eventLogDir, transparencyPath, id, reason, "infrastructure_operator"); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
 	}

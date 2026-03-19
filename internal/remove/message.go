@@ -21,7 +21,7 @@ type eventEntry struct {
 // RedactMessage finds a message by ID in the event log files, replaces its content
 // with a redaction notice, and writes a transparency log entry.
 // The kernel must be stopped (event log must not be actively written).
-func RedactMessage(eventLogDir, transparencyPath, messageID, reason string) error {
+func RedactMessage(eventLogDir, transparencyPath, messageID, reason, performedBy string) error {
 	files, err := logFiles(eventLogDir)
 	if err != nil {
 		return fmt.Errorf("read event log dir: %w", err)
@@ -29,7 +29,7 @@ func RedactMessage(eventLogDir, transparencyPath, messageID, reason string) erro
 
 	for _, name := range files {
 		path := filepath.Join(eventLogDir, name)
-		found, err := redactInFile(path, messageID, transparencyPath, reason)
+		found, err := redactInFile(path, messageID, transparencyPath, reason, performedBy)
 		if err != nil {
 			return err
 		}
@@ -57,7 +57,7 @@ func logFiles(dir string) ([]string, error) {
 	return files, nil
 }
 
-func redactInFile(path, messageID, transparencyPath, reason string) (bool, error) {
+func redactInFile(path, messageID, transparencyPath, reason, performedBy string) (bool, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return false, err
@@ -134,7 +134,7 @@ func redactInFile(path, messageID, transparencyPath, reason string) (bool, error
 		Action:      "message_redacted",
 		MessageID:   messageID,
 		Reason:      reason,
-		PerformedBy: "infrastructure_operator",
+		PerformedBy: performedBy,
 		ContentHash: HashContent(originalContent),
 	}
 

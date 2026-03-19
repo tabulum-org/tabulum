@@ -20,3 +20,6 @@ websocket:
   write_timeout: 10s
   ping_interval: 30s
   max_duration: 24h
+
+admin:
+  enabled: true
