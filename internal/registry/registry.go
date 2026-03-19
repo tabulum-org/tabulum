@@ -162,8 +162,9 @@ func (r *Registry) CreateOperator(ctx context.Context, contactHash string) (*Ope
 		if err := r.eventLog.Append(ctx, logging.Event{
 			Type: logging.EventOperatorCreated,
 			Data: logging.OperatorCreatedData{
-				OperatorID:  id,
-				ContactHash: contactHash,
+				OperatorID:    id,
+				ContactHash:   contactHash,
+				AcceptedTerms: true,
 			},
 		}); err != nil {
 			return nil, "", fmt.Errorf("log operator creation: %w", err)

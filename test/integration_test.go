@@ -76,7 +76,7 @@ func setupKernelWithRateLimits(t *testing.T, opLimit, msgLimit, stateReadLimit i
 
 func registerOperator(t *testing.T, baseURL string) string {
 	t.Helper()
-	body := `{"contact_hash":"test_hash_abc123"}`
+	body := `{"contact_hash":"test_hash_abc123","accept_terms":true}`
 	resp, err := http.Post(baseURL+"/v1/operators", "application/json", strings.NewReader(body))
 	if err != nil {
 		t.Fatalf("Failed to register operator: %v", err)
@@ -191,7 +191,7 @@ func TestOperator_RateLimitByIP(t *testing.T) {
 
 	// Register operators rapidly
 	for i := 0; i < 3; i++ {
-		resp := doRequest(t, "POST", baseURL+"/v1/operators", "", map[string]string{"contact_hash": fmt.Sprintf("hash_%d", i)})
+		resp := doRequest(t, "POST", baseURL+"/v1/operators", "", map[string]interface{}{"contact_hash": fmt.Sprintf("hash_%d", i), "accept_terms": true})
 		resp.Body.Close()
 		if resp.StatusCode != http.StatusCreated {
 			t.Fatalf("Expected 201 on request %d, got %d", i, resp.StatusCode)
@@ -199,7 +199,7 @@ func TestOperator_RateLimitByIP(t *testing.T) {
 	}
 
 	// Next one should be rate limited
-	resp := doRequest(t, "POST", baseURL+"/v1/operators", "", map[string]string{"contact_hash": "hash_extra"})
+	resp := doRequest(t, "POST", baseURL+"/v1/operators", "", map[string]interface{}{"contact_hash": "hash_extra", "accept_terms": true})
 	resp.Body.Close()
 	if resp.StatusCode != http.StatusTooManyRequests {
 		t.Fatalf("Expected 429, got %d", resp.StatusCode)

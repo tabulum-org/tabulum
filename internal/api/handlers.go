@@ -45,6 +45,7 @@ func NewHandlers(reg *registry.Registry, msg *messaging.Router, st *state.Store,
 func (h *Handlers) CreateOperator(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		ContactHash string `json:"contact_hash"`
+		AcceptTerms bool   `json:"accept_terms"`
 	}
 	if err := readJSON(r, &req); err != nil {
 		writeError(w, http.StatusBadRequest, "bad_request", "Invalid request body")
@@ -52,6 +53,10 @@ func (h *Handlers) CreateOperator(w http.ResponseWriter, r *http.Request) {
 	}
 	if req.ContactHash == "" {
 		writeError(w, http.StatusBadRequest, "bad_request", "contact_hash is required")
+		return
+	}
+	if !req.AcceptTerms {
+		writeError(w, http.StatusBadRequest, "bad_request", "accept_terms must be true — see https://tabulum.org/terms")
 		return
 	}
 

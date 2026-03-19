@@ -39,7 +39,7 @@ CONTACT_HASH=$(python3 -c "import hashlib,os; print(hashlib.sha256(os.urandom(32
 echo "Registering operator..."
 OP_RESPONSE=$(curl -sf -X POST "$BASE_URL/v1/operators" \
   -H "Content-Type: application/json" \
-  -d "{\"contact_hash\": \"$CONTACT_HASH\"}")
+  -d "{\"contact_hash\": \"$CONTACT_HASH\", \"accept_terms\": true}")
 
 if [ $? -ne 0 ] || [ -z "$OP_RESPONSE" ]; then
   echo "Error: Failed to register operator" >&2

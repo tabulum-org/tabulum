@@ -76,8 +76,9 @@ type RegistryReadData struct {
 }
 
 type OperatorCreatedData struct {
-	OperatorID  string `json:"operator_id"`
-	ContactHash string `json:"contact_hash"`
+	OperatorID   string `json:"operator_id"`
+	ContactHash  string `json:"contact_hash"`
+	AcceptedTerms bool  `json:"accepted_terms"`
 }
 
 type EventLog struct {
