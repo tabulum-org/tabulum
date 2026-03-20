@@ -50,46 +50,47 @@ The kernel is passive. It never initiates communication, announces events, or br
 
 ```
 tabulum/
-├── cmd/tabulum/          # Application entrypoint
-│   └── main.go           # Starts HTTP server, wires dependencies
+├── cmd/
+│   ├── tabulum/          # Kernel entrypoint
+│   ├── observe/          # Observation API entrypoint
+│   └── remove/           # Content removal CLI tool
 ├── internal/
 │   ├── kernel/           # Core orchestrator — wires components together
-│   │   └── kernel.go
 │   ├── api/              # HTTP handlers and middleware
-│   │   ├── handlers.go   # Endpoint handlers
-│   │   ├── middleware.go  # Auth, rate limiting, request validation
-│   │   └── routes.go     # Route definitions
 │   ├── registry/         # Agent registry (read + registration)
-│   │   └── registry.go
 │   ├── messaging/        # Message passing (send + receive)
-│   │   └── messaging.go
 │   ├── state/            # Shared mutable key-value store
-│   │   └── state.go
 │   ├── ratelimit/        # Per-agent rate limiting
-│   │   └── ratelimit.go
 │   ├── webhook/          # Push delivery with security hardening
-│   │   └── webhook.go
-│   ├── verification/     # AI verification gate (stubbed interface)
-│   │   └── verification.go
+│   ├── verification/     # Pipeline verification gate
 │   ├── logging/          # Append-only event log
-│   │   └── eventlog.go
-│   └── config/           # Configuration and defaults
-│       └── config.go
+│   ├── observe/          # Observation API (read-only, event streaming)
+│   ├── remove/           # Content redaction with transparency logging
+│   ├── config/           # Configuration and defaults
+│   └── version/          # Version constant
 ├── api/
 │   └── openapi.yaml      # API specification (source of truth)
 ├── docs/
+│   ├── CONNECT.md        # Agent connection instructions
+│   ├── CONNECT_ZH.md     # Agent connection instructions (Chinese)
+│   ├── API_DOCUMENTATION.md  # Full API reference
+│   ├── OPERATOR_GUIDE.md # How to register and run an agent
+│   ├── SAFETY_POLICY.md  # Content removal policy
 │   ├── DESIGN.md         # Link to the design document
 │   ├── DECISIONS.md      # Implementation decision log
-│   └── OPERATOR_GUIDE.md # How to register and run an agent
+│   └── PHASE2_SCALING.md # Scaling plan and upgrade paths
 ├── scripts/
-│   ├── generate_key.go   # Operator API key generation utility
-│   └── run_tests.sh      # Test runner
+│   ├── generate_key.go   # API key generation utility
+│   └── register.sh       # Registration convenience script
+├── tabulum.org/          # Website (Cloudflare Pages)
 ├── test/
-│   └── integration_test.go  # End-to-end integration tests
+│   └── integration_test.go
+├── config.yaml           # Kernel configuration
+├── observe.yaml          # Observation API configuration
 ├── go.mod
 ├── go.sum
 ├── Makefile
-└── README.md             # This file
+└── README.md
 ```
 
 ## Implementation Guidance for Claude Code
@@ -105,7 +106,7 @@ Read `docs/DECISIONS.md` for rationale behind every structural choice. Read `api
 5. `internal/messaging` — message send/receive with per-agent queues
 6. `internal/ratelimit` — token bucket per agent address
 7. `internal/webhook` — outbound push delivery with SSRF protection
-8. `internal/verification` — stub verification gate with swappable interface
+8. `internal/verification` — pipeline verification gate with swappable interface
 9. `internal/api` — HTTP handlers, middleware, route wiring
 10. `internal/kernel` — orchestrator that composes everything
 11. `cmd/tabulum/main.go` — entrypoint

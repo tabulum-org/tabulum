@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 190 190" width="190" height="190">
+  <defs>
+    <linearGradient id="g0" x1="31" y1="38" x2="32" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="g1" x1="159" y1="38" x2="158" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="31" y1="38" x2="79" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="g3" x1="32" y1="60" x2="95" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.65"/>
+    </linearGradient>
+    <linearGradient id="g4" x1="95" y1="32" x2="158" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="g5" x1="111" y1="64" x2="159" y2="38" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.65"/>
+    </linearGradient>
+    <linearGradient id="g6" x1="31" y1="38" x2="95" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.65"/>
+    </linearGradient>
+    <linearGradient id="g7" x1="95" y1="32" x2="159" y2="38" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.12"/>
+    </linearGradient>
+    <linearGradient id="g8" x1="32" y1="60" x2="79" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g9" x1="111" y1="64" x2="158" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+    </linearGradient>
+    <linearGradient id="g10" x1="95" y1="32" x2="79" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g11" x1="95" y1="32" x2="111" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g12" x1="79" y1="64" x2="78" y2="107" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g13" x1="111" y1="64" x2="112" y2="107" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g14" x1="79" y1="64" x2="112" y2="107" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g15" x1="111" y1="64" x2="78" y2="107" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g16" x1="78" y1="107" x2="112" y2="107" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g17" x1="78" y1="107" x2="80" y2="157" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g18" x1="112" y1="107" x2="110" y2="157" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g19" x1="78" y1="107" x2="110" y2="157" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g20" x1="112" y1="107" x2="80" y2="157" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+    </linearGradient>
+    <linearGradient id="g21" x1="80" y1="157" x2="110" y2="157" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgb(210,190,160)" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="rgb(210,190,160)" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+  <rect width="190" height="190" rx="12" fill="#0a0a0c"/>
+  <polygon points="31,38 95,32 159,38 158,60 111,64 79,64 32,60" fill="rgba(210,190,160,0.2)"/>
+  <polygon points="79,64 111,64 112,107 110,157 80,157 78,107" fill="rgba(210,190,160,0.2)"/>
+  <polygon points="28.502578649474252,38.113519152296625 31.10092831381073,60.040866894826785 32.89907168618927,59.959133105173215 33.49742135052575,37.886480847703375" fill="url(#g0)"/>
+  <polygon points="156.50257864947426,37.886480847703375 157.10092831381073,59.959133105173215 158.89907168618927,60.040866894826785 161.49742135052574,38.113519152296625" fill="url(#g1)"/>
+  <polygon points="29.809292128648117,40.19822991634194 78.57134516631332,64.7913627698831 79.42865483368668,63.208637230116906 32.19070787135188,35.80177008365806" fill="url(#g2)"/>
+  <polygon points="32.3655246194481,60.82243039375823 96.01534616513362,34.28452887155064 93.98465383486638,29.71547112844936 31.634475380551898,59.17756960624177" fill="url(#g3)"/>
+  <polygon points="93.98465383486638,34.28452887155064 157.6344753805519,60.82243039375823 158.3655246194481,59.17756960624177 96.01534616513362,29.71547112844936" fill="url(#g4)"/>
+  <polygon points="111.42865483368668,64.7913627698831 160.1907078713519,40.19822991634194 157.8092921286481,35.80177008365806 110.57134516631332,63.208637230116906" fill="url(#g5)"/>
+  <polygon points="31.08400663782375,38.89607080345336 95.23335177173264,34.48908556514822 94.76664822826736,29.51091443485178 30.91599336217625,37.10392919654664" fill="url(#g6)"/>
+  <polygon points="94.76664822826736,34.48908556514822 158.91599336217624,38.89607080345336 159.08400663782376,37.10392919654664 95.23335177173264,29.51091443485178" fill="url(#g7)"/>
+  <polygon points="31.83888032223903,61.893156213691356 78.94912010175969,64.59783880432359 79.05087989824031,63.40216119567641 32.161119677760965,58.106843786308644" fill="url(#g8)"/>
+  <polygon points="111.05087989824031,64.59783880432359 158.16111967776098,61.893156213691356 157.83888032223902,58.106843786308644 110.94912010175969,63.40216119567641" fill="url(#g9)"/>
+  <polygon points="93.30058833710017,31.15029416855008 78.46334368540005,63.731671842700024 79.53665631459995,64.26832815729998 96.69941166289983,32.84970583144992" fill="url(#g10)"/>
+  <polygon points="93.30058833710017,32.84970583144992 110.46334368540005,64.26832815729998 111.53665631459995,63.731671842700024 96.69941166289983,31.15029416855008" fill="url(#g11)"/>
+  <polygon points="77.100513582926,63.95582589727735 77.40016218408189,106.98605028335074 78.59983781591811,107.01394971664926 80.899486417074,64.04417410272265" fill="url(#g12)"/>
+  <polygon points="109.100513582926,64.04417410272265 111.40016218408189,107.01394971664926 112.59983781591811,106.98605028335074 112.899486417074,63.95582589727735" fill="url(#g13)"/>
+  <polygon points="77.49271228042848,65.15675569176419 111.52401440434583,107.36529127108344 112.47598559565417,106.63470872891656 80.50728771957152,62.8432443082358" fill="url(#g14)"/>
+  <polygon points="109.49271228042848,62.8432443082358 77.52401440434583,106.63470872891656 78.47598559565417,107.36529127108344 112.50728771957152,65.15675569176419" fill="url(#g15)"/>
+  <polygon points="78,108.9 112,107.6 112,106.4 78,105.1" fill="url(#g16)"/>
+  <polygon points="76.1015181784286,107.07593927286285 79.40047942476693,157.0239808230093 80.59952057523307,156.9760191769907 79.8984818215714,106.92406072713715" fill="url(#g17)"/>
+  <polygon points="110.1015181784286,106.92406072713715 109.40047942476693,156.9760191769907 110.59952057523307,157.0239808230093 113.8984818215714,107.07593927286285" fill="url(#g18)"/>
+  <polygon points="76.39968433874313,108.0242020232044 109.49463715960309,157.32343221785402 110.50536284039691,156.67656778214598 79.60031566125687,105.9757979767956" fill="url(#g19)"/>
+  <polygon points="110.39968433874313,105.9757979767956 79.49463715960309,156.67656778214598 80.50536284039691,157.32343221785402 113.60031566125687,108.0242020232044" fill="url(#g20)"/>
+  <polygon points="80,157.6 110,158.9 110,155.1 80,156.4" fill="url(#g21)"/>
+  <circle cx="31" cy="38" r="5" fill="rgba(210,190,160,0.8)"/>
+  <circle cx="95" cy="32" r="5" fill="rgba(210,190,160,0.8)"/>
+  <circle cx="159" cy="38" r="5" fill="rgba(210,190,160,0.8)"/>
+  <circle cx="32" cy="60" r="5" fill="rgba(210,190,160,0.8)"/>
+  <circle cx="79" cy="64" r="5" fill="rgba(210,190,160,0.8)"/>
+  <circle cx="111" cy="64" r="5" fill="rgba(210,190,160,0.8)"/>
+  <circle cx="158" cy="60" r="5" fill="rgba(210,190,160,0.8)"/>
+  <circle cx="78" cy="107" r="5" fill="rgba(210,190,160,0.8)"/>
+  <circle cx="112" cy="107" r="5" fill="rgba(210,190,160,0.8)"/>
+  <circle cx="80" cy="157" r="5" fill="rgba(210,190,160,0.8)"/>
+  <circle cx="110" cy="157" r="5" fill="rgba(210,190,160,0.8)"/>
+</svg>
