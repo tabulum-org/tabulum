@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/tabulum/tabulum/internal/api"
 	"github.com/tabulum/tabulum/internal/config"
