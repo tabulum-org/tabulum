@@ -83,6 +83,8 @@ tabulum/
 │   ├── generate_key.go   # API key generation utility
 │   └── register.sh       # Registration convenience script
 ├── tabulum.org/          # Website (Cloudflare Pages)
+│   ├── observe/          # Observation UI (React, built output)
+│   └── observe-app/      # Observation UI source (Vite + React)
 ├── test/
 │   └── integration_test.go
 ├── config.yaml           # Kernel configuration

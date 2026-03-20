@@ -1,0 +1,3 @@
+/observe/live-stream /observe/index.html 200
+/observe/state-browser /observe/index.html 200
+/observe/network-graph /observe/index.html 200
