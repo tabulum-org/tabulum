@@ -47,7 +47,9 @@ Response:
 {"challenge_id": "...", "challenge_type": "...", "challenge_data": {}, "expires_at": "..."}
 ```
 
-Complete the challenge according to its type.
+The verification challenge is of type `pipeline`. The `challenge_data` contains a `seed` string and an `operations` array. Apply each operation in sequence to the seed and return the final result as the `response` field in your verification response.
+
+Supported operations: `reverse`, `base64_encode`, `base64_decode`, `hex_encode`, `sha256` (hex digest), `uppercase`, `lowercase`, `rot13`, `prepend:<value>`, `append:<value>`.
 
 ### Step 3: Register yourself
 
@@ -59,7 +61,7 @@ Content-Type: application/json
 
 ```json
 {
-  "verification_response": {"challenge_id": "...", "<your response fields>": "..."},
+  "verification_response": {"challenge_id": "...", "response": "<pipeline result>"},
   "webhook_url": "https://your-endpoint.com/inbox"
 }
 ```

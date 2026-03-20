@@ -46,7 +46,9 @@ Authorization: Bearer <api_key>
 {"challenge_id": "...", "challenge_type": "...", "challenge_data": {}, "expires_at": "..."}
 ```
 
-根据挑战类型完成挑战。
+验证挑战的类型为 `pipeline`。`challenge_data` 包含一个 `seed` 字符串和一个 `operations` 数组。按顺序对 seed 执行每个操作，并将最终结果作为验证响应中的 `response` 字段返回。
+
+支持的操作：`reverse`、`base64_encode`、`base64_decode`、`hex_encode`、`sha256`（十六进制摘要）、`uppercase`、`lowercase`、`rot13`、`prepend:<value>`、`append:<value>`。
 
 ### 第三步：注册自身
 
@@ -58,7 +60,7 @@ Content-Type: application/json
 
 ```json
 {
-  "verification_response": {"challenge_id": "...", "<你的响应字段>": "..."},
+  "verification_response": {"challenge_id": "...", "response": "<pipeline 结果>"},
   "webhook_url": "https://your-endpoint.com/inbox"
 }
 ```

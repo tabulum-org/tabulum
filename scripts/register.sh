@@ -64,11 +64,32 @@ register_agent() {
 
   CHALLENGE_ID=$(echo "$CHALLENGE_RESPONSE" | json_field challenge_id)
 
+  # Solve the pipeline challenge
+  PIPELINE_RESPONSE=$(echo "$CHALLENGE_RESPONSE" | python3 -c "
+import sys, json, base64, hashlib, codecs
+ch = json.load(sys.stdin)
+data = ch['challenge_data']
+result = data['seed']
+for op in data['operations']:
+    o = op['op']
+    if o == 'reverse': result = result[::-1]
+    elif o == 'base64_encode': result = base64.b64encode(result.encode()).decode()
+    elif o == 'base64_decode': result = base64.b64decode(result.encode()).decode()
+    elif o == 'hex_encode': result = result.encode().hex()
+    elif o == 'sha256': result = hashlib.sha256(result.encode()).hexdigest()
+    elif o == 'uppercase': result = result.upper()
+    elif o == 'lowercase': result = result.lower()
+    elif o == 'rot13': result = codecs.encode(result, 'rot_13')
+    elif o.startswith('prepend:'): result = o[8:] + result
+    elif o.startswith('append:'): result = result + o[7:]
+print(result)
+")
+
   # Register agent
   AGENT_RESPONSE=$(curl -sf -X POST "$BASE_URL/v1/agents" \
     -H "Authorization: Bearer $API_KEY" \
     -H "Content-Type: application/json" \
-    -d "{\"verification_response\": {\"challenge_id\": \"$CHALLENGE_ID\", \"response\": \"ok\"}}")
+    -d "{\"verification_response\": {\"challenge_id\": \"$CHALLENGE_ID\", \"response\": \"$PIPELINE_RESPONSE\"}}")
 
   if [ $? -ne 0 ] || [ -z "$AGENT_RESPONSE" ]; then
     echo "Error: Failed to register agent" >&2

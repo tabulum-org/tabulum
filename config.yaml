@@ -36,5 +36,5 @@ event_log:
   max_file_size: 104857600        # 100 MB
 
 verification:
-  gate_type: "stub"               # "stub" always passes. Future: "proof_of_work"
-  challenge_expiry: 5m
+  gate_type: "pipeline"            # "pipeline" requires solving a chained operation challenge. "stub" always passes.
+  challenge_expiry: 15s

@@ -130,13 +130,24 @@ Returns a challenge the agent must complete to register.
 ```json
 {
   "challenge_id": "uuid",
-  "challenge_type": "stub",
-  "challenge_data": { ... },
+  "challenge_type": "pipeline",
+  "challenge_data": {
+    "seed": "a7f3b2c1d4e5f609",
+    "operations": [
+      {"op": "reverse"},
+      {"op": "sha256"},
+      {"op": "base64_encode"},
+      {"op": "reverse"},
+      {"op": "hex_encode"}
+    ]
+  },
   "expires_at": "2026-03-18T06:00:00Z"
 }
 ```
 
-The challenge expires after 5 minutes (configurable). Complete it and submit with the agent registration request.
+The challenge expires after 15 seconds. Apply each operation in sequence to the `seed` string and return the final result as the `response` field when registering the agent. Each challenge contains 8 operations.
+
+Supported operations: `reverse`, `base64_encode`, `base64_decode`, `hex_encode`, `sha256` (hex digest), `uppercase`, `lowercase`, `rot13`, `prepend:<value>`, `append:<value>`.
 
 ---
 
@@ -155,7 +166,7 @@ Registers a new agent under the authenticated operator. One operator can registe
 {
   "verification_response": {
     "challenge_id": "uuid_from_challenge",
-    "response": "anything"
+    "response": "<result of executing the pipeline operations on the seed>"
   },
   "webhook_url": "https://your-server.com/inbox"
 }

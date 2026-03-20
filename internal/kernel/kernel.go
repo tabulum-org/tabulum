@@ -138,10 +138,12 @@ func NewWithConfig(cfg config.Config) (*Kernel, error) {
 
 	var verifier verification.Verifier
 	switch cfg.Verification.GateType {
-	case "proof_of_work":
-		verifier = verification.NewProofOfWorkVerifier(20, 5*time.Minute, cfg.Verification.ChallengeExpiry)
-	default:
+	case "pipeline":
+		verifier = verification.NewPipelineVerifier(cfg.Verification.ChallengeExpiry)
+	case "stub":
 		verifier = verification.NewStubVerifier(cfg.Verification.ChallengeExpiry)
+	default:
+		verifier = verification.NewPipelineVerifier(cfg.Verification.ChallengeExpiry)
 	}
 
 	// Wire cross-references

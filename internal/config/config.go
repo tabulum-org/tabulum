@@ -100,8 +100,8 @@ func DefaultConfig() Config {
 			MaxFileSize: 104857600, // 100 MB
 		},
 		Verification: VerificationConfig{
-			GateType:        "stub",
-			ChallengeExpiry: 5 * time.Minute,
+			GateType:        "pipeline",
+			ChallengeExpiry: 15 * time.Second,
 		},
 	}
 }
@@ -164,10 +164,10 @@ func Load(path string) (Config, error) {
 		cfg.EventLog.DataDir = "./data/eventlog"
 	}
 	if cfg.Verification.GateType == "" {
-		cfg.Verification.GateType = "stub"
+		cfg.Verification.GateType = "pipeline"
 	}
 	if cfg.Verification.ChallengeExpiry == 0 {
-		cfg.Verification.ChallengeExpiry = 5 * time.Minute
+		cfg.Verification.ChallengeExpiry = 15 * time.Second
 	}
 
 	return cfg, nil
