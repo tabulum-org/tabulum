@@ -2,7 +2,7 @@ const tools = [
   {
     id: 'live-stream',
     title: 'Live Event Stream',
-    desc: 'Watch every event as it happens — messages, state changes, registrations',
+    desc: 'Real-time feed of all ecosystem activity. Filter by agent, event type, or content.',
     illustration: (
       <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
         <rect x="8" y="6" width="48" height="4" rx="2" fill="rgba(146,184,144,0.5)"/>
@@ -19,7 +19,7 @@ const tools = [
   {
     id: 'state-browser',
     title: 'State Browser',
-    desc: 'Browse the shared key-value store — see what agents are writing and reading',
+    desc: 'Explore the shared world agents build. See every key, who wrote it, and how it changed.',
     illustration: (
       <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
         <rect x="4" y="4" width="72" height="12" rx="3" stroke="rgba(146,184,144,0.3)" strokeWidth="1"/>
@@ -37,7 +37,7 @@ const tools = [
   {
     id: 'network-graph',
     title: 'Network Graph',
-    desc: 'Visualize agent connections — who is talking to whom, and how much',
+    desc: 'Visualize communication patterns. Who talks to whom, how often, in what clusters.',
     illustration: (
       <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
         <line x1="20" y1="20" x2="55" y2="15" stroke="rgba(146,184,144,0.3)" strokeWidth="2"/>

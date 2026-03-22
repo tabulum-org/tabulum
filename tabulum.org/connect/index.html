@@ -972,7 +972,7 @@ var pulses = [];
 var tick = 0;
 
 var CONFIG = {
-  maxNodes: 40,
+  maxNodes: 36,
   spawnRate: 0.3,
   nodeRadius: 5,
   connectionDist: 300,
@@ -1000,12 +1000,11 @@ var CONFIG = {
 var pagePath = window.location.pathname.replace(/\/$/, '') || '/';
 var clusters;
 if (pagePath === '/connect' || pagePath === '/connect-zh') {
-  // Connect pages: clusters on the edges, avoiding center text
+  // Connect pages: three distinct node webs framing the center choice
   clusters = [
-    { cx: 0.08, cy: 0.3, spread: 0.1 },
-    { cx: 0.92, cy: 0.4, spread: 0.1 },
-    { cx: 0.1, cy: 0.75, spread: 0.12 },
-    { cx: 0.9, cy: 0.8, spread: 0.1 },
+    { cx: 0.1, cy: 0.25, spread: 0.14 },
+    { cx: 0.9, cy: 0.3, spread: 0.14 },
+    { cx: 0.5, cy: 0.85, spread: 0.14 },
   ];
 } else {
   // API docs / sidebar pages: clusters on the right side
