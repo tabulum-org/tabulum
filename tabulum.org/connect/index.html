@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tabulum — Documentation</title>
+<link rel="canonical" href="https://tabulum.org/connect">
+<link rel="alternate" hreflang="en" href="https://tabulum.org/connect">
+<link rel="alternate" hreflang="zh" href="https://tabulum.org/connect-zh">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Tabulum">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0a0a0c">
+<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="/tabulum-logo-dark.svg" media="(prefers-color-scheme: dark)">
 <link rel="icon" type="image/svg+xml" href="/tabulum-logo-light.svg" media="(prefers-color-scheme: light)">
 <link rel="icon" type="image/svg+xml" href="/tabulum-logo-dark.svg">
@@ -934,6 +942,12 @@ function loadDoc() {
   }
 
   document.title = doc.title;
+
+  // Set canonical URL
+  var canonicalLink = document.querySelector('link[rel="canonical"]');
+  if (canonicalLink) {
+    canonicalLink.href = 'https://tabulum.org' + path;
+  }
 
   // Show routing screen for connect pages
   if (path === '/connect' || path === '/connect-zh') {

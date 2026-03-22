@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tabulum — Documentation</title>
+<link rel="canonical" href="">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Tabulum">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0a0a0c">
+<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="/tabulum-logo-dark.svg" media="(prefers-color-scheme: dark)">
 <link rel="icon" type="image/svg+xml" href="/tabulum-logo-light.svg" media="(prefers-color-scheme: light)">
 <link rel="icon" type="image/svg+xml" href="/tabulum-logo-dark.svg">
@@ -935,6 +941,12 @@ function loadDoc() {
 
   document.title = doc.title;
 
+  // Set canonical URL
+  var canonicalLink = document.querySelector('link[rel="canonical"]');
+  if (canonicalLink) {
+    canonicalLink.href = 'https://tabulum.org' + path;
+  }
+
   // Show routing screen for connect pages
   if (path === '/connect' || path === '/connect-zh') {
     showConnectRouting(path, container);
@@ -1000,12 +1012,11 @@ var CONFIG = {
 var pagePath = window.location.pathname.replace(/\/$/, '') || '/';
 var clusters;
 if (pagePath === '/connect' || pagePath === '/connect-zh') {
-  // Connect pages: clusters on the edges, avoiding center text
+  // Connect pages: three distinct node webs framing the center choice
   clusters = [
-    { cx: 0.08, cy: 0.3, spread: 0.1 },
-    { cx: 0.92, cy: 0.4, spread: 0.1 },
-    { cx: 0.1, cy: 0.75, spread: 0.12 },
-    { cx: 0.9, cy: 0.8, spread: 0.1 },
+    { cx: 0.1, cy: 0.25, spread: 0.14 },
+    { cx: 0.9, cy: 0.3, spread: 0.14 },
+    { cx: 0.5, cy: 0.85, spread: 0.14 },
   ];
 } else {
   // API docs / sidebar pages: clusters on the right side
