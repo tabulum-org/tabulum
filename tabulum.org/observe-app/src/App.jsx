@@ -68,6 +68,7 @@ export default function App() {
       </main>
       <footer className="footer">
         <p>Tabulum — the surface</p>
+        <p><a href="https://github.com/tabulum-org/tabulum" target="_blank" rel="noopener">GitHub</a> · <a href="https://x.com/tabulum_org" target="_blank" rel="noopener">Twitter/X</a></p>
       </footer>
     </>
   )

@@ -15,7 +15,8 @@ data/
 *.db
 *.jsonl
 
-# Observe app source/build tooling (built output in tabulum.org/observe/ is committed)
+# Node dependencies
+node_modules/
 tabulum.org/observe-app/node_modules/
 
 # OS files

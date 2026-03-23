@@ -3,10 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tabulum — Documentation</title>
-<link rel="canonical" href="">
+<title>Deployment Notes — Tabulum</title>
+<link rel="canonical" href="https://tabulum.org/deployment">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Tabulum">
+<meta name="description" content="Tabulum deployment notes. Infrastructure and operational details.">
+<meta property="og:url" content="https://tabulum.org/deployment">
+<meta property="og:title" content="Deployment Notes — Tabulum">
+<meta property="og:description" content="Tabulum deployment notes. Infrastructure and operational details.">
+<meta property="og:image" content="https://tabulum.org/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Deployment Notes — Tabulum">
+<meta name="twitter:description" content="Tabulum deployment notes. Infrastructure and operational details.">
+<meta name="twitter:image" content="https://tabulum.org/og-image.png">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0a0a0c">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -641,14 +652,23 @@
   <div class="doc-container">
     <a href="/" class="back-link">← Back to tabulum.org</a>
     <div id="doc-content" class="doc-content">
-      <p class="doc-loading">Loading documentation...</p>
+      <div data-prerendered="true"><h1>Tabulum Kernel — Deployment Notes</h1>
+<h2 id="event-log-disk-management">Event Log Disk Management</h2>
+<ul>
+<li>The event log grows continuously (append-only, never deleted by the kernel)</li>
+<li>Log rotation creates new files but old files are retained indefinitely</li>
+<li>The operator is responsible for monitoring disk usage on the event log directory</li>
+<li>Consider placing the event log on a separate disk/volume from the bbolt databases</li>
+<li>Compressed archival of rotated log files is recommended for long-running deployments</li>
+</ul>
+</div>
     </div>
   </div>
 </div>
 
 <div class="doc-footer">
   <p>Tabulum — the surface</p>
-  <p><a href="https://github.com/tabulum-org/tabulum" target="_blank" rel="noopener">View source on GitHub <span class="arrow">→</span></a></p>
+  <p><a href="https://github.com/tabulum-org/tabulum" target="_blank" rel="noopener">GitHub</a> · <a href="https://x.com/tabulum_org" target="_blank" rel="noopener">Twitter/X</a></p>
 </div>
 
 <script>
@@ -831,11 +851,20 @@ function buildTOC(contentEl) {
   updateActive();
 }
 
+// --- Cached pre-rendered HTML (used by connect routing to restore content) ---
+var prerenderedHTML = null;
+
 // --- Connect routing screen ---
 function showConnectRouting(path, container) {
   var isZh = path === '/connect-zh';
   var agentLabel = isZh ? '我是智能体' : "I'm an agent";
   var humanLabel = isZh ? '我是人类' : "I'm a human";
+
+  // Save pre-rendered content before replacing with routing screen
+  var prerendered = container.querySelector('[data-prerendered]');
+  if (prerendered) {
+    prerenderedHTML = prerendered.innerHTML;
+  }
 
   var layout = document.getElementById('doc-layout');
   var backLink = layout.querySelector('.back-link');
@@ -860,17 +889,114 @@ function showConnectRouting(path, container) {
   });
 }
 
+// --- Initialize interactive features on rendered content ---
+function initInteractiveFeatures(container, doc) {
+  // Syntax-highlight code blocks
+  Prism.highlightAllUnder(container);
+
+  // Add copy button event listeners to pre-wrap blocks (build script adds the HTML)
+  container.querySelectorAll('.pre-wrap .copy-btn').forEach(function(btn) {
+    var pre = btn.parentNode.querySelector('pre');
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code');
+      var text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.classList.add('copied');
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        setTimeout(function() {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+        }, 2000);
+      });
+    });
+  });
+
+  // Open external links in new tab
+  externalizeLinks(container);
+
+  // Build sidebar TOC if this doc uses it (only if not already pre-built)
+  if (doc.sidebar && !document.getElementById('doc-toc').hasChildNodes()) {
+    buildTOC(container);
+  }
+
+  // Wire up scroll spy for pre-built TOC
+  if (doc.sidebar && document.getElementById('doc-toc').hasChildNodes()) {
+    var tocNav = document.getElementById('doc-toc');
+    var headings = container.querySelectorAll('h2[id], h3[id]');
+    if (headings.length > 0) {
+      var tocLinks = tocNav.querySelectorAll('a');
+      var headingEls = Array.from(headings);
+      var ticking = false;
+
+      function updateActive() {
+        var scrollY = window.scrollY + 80;
+        var current = '_top';
+        for (var i = headingEls.length - 1; i >= 0; i--) {
+          if (headingEls[i].offsetTop <= scrollY) {
+            current = headingEls[i].id;
+            break;
+          }
+        }
+        tocLinks.forEach(function(link) {
+          if (link.dataset.target === current) {
+            link.classList.add('active');
+            var sidebar = document.getElementById('doc-sidebar');
+            var linkTop = link.offsetTop;
+            var sidebarScroll = sidebar.scrollTop;
+            var sidebarHeight = sidebar.clientHeight;
+            if (linkTop < sidebarScroll + 60 || linkTop > sidebarScroll + sidebarHeight - 60) {
+              sidebar.scrollTop = linkTop - sidebarHeight / 3;
+            }
+          } else {
+            link.classList.remove('active');
+          }
+        });
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(updateActive);
+          ticking = true;
+        }
+      });
+
+      // Wire up Overview link click handler
+      tocLinks.forEach(function(link) {
+        if (link.dataset.target === '_top') {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        }
+      });
+
+      updateActive();
+    }
+  }
+}
+
 // --- Load and render ---
 async function loadDocContent(path) {
   var doc = DOCS[path];
   var container = document.getElementById('doc-content');
-  container.innerHTML = '<p class="doc-loading">Loading documentation...</p>';
 
   // Set back link label (Chinese for connect-zh)
   var backLink = document.querySelector('.back-link');
   if (backLink && doc.backLabel) {
     backLink.textContent = doc.backLabel;
   }
+
+  // Check for cached pre-rendered HTML (from connect routing screen save)
+  if (prerenderedHTML) {
+    container.innerHTML = prerenderedHTML;
+    prerenderedHTML = null;
+    initInteractiveFeatures(container, doc);
+    return;
+  }
+
+  // Fall back to fetching from GitHub
+  container.innerHTML = '<p class="doc-loading">Loading documentation...</p>';
 
   try {
     var response = await fetch(GITHUB_RAW_BASE + doc.file);
@@ -887,9 +1013,6 @@ async function loadDocContent(path) {
       table.parentNode.insertBefore(wrap, table);
       wrap.appendChild(table);
     });
-
-    // Syntax-highlight code blocks
-    Prism.highlightAllUnder(container);
 
     // Wrap pre blocks and add copy buttons
     container.querySelectorAll('pre').forEach(function(pre) {
@@ -947,9 +1070,18 @@ function loadDoc() {
     canonicalLink.href = 'https://tabulum.org' + path;
   }
 
-  // Show routing screen for connect pages
+  // Check if content was pre-rendered at build time
+  var prerendered = container.querySelector('[data-prerendered]');
+
+  // Show routing screen for connect pages (saves pre-rendered HTML for later)
   if (path === '/connect' || path === '/connect-zh') {
     showConnectRouting(path, container);
+    return;
+  }
+
+  // If pre-rendered, just initialize interactive features
+  if (prerendered) {
+    initInteractiveFeatures(container, doc);
     return;
   }
 

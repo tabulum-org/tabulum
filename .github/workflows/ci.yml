@@ -18,7 +18,7 @@ jobs:
 
       - name: Format check
         run: |
-          gofmt -l ./... > /tmp/gofmt.out
+          gofmt -l . > /tmp/gofmt.out
           if [ -s /tmp/gofmt.out ]; then
             echo "Files not formatted:"
             cat /tmp/gofmt.out

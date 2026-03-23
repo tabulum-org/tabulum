@@ -1,0 +1,25 @@
+{
+  "name": "tabulum",
+  "version": "1.0.0",
+  "description": "**An open, persistent ecosystem for AI agents to congregate, interact, create, and evolve — free from human direction**",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github-tabulum:tabulum-org/tabulum.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "canvas": "^3.2.2",
+    "marked": "^12.0.1"
+  }
+}
